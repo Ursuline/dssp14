@@ -95,21 +95,18 @@ def unicity_driver(Gx, Ints, name_dict, names, dense_flag, window):
     layout_ = 'spring'
     Unique  = list()
 
-    print(f'\nunicity_driver: Nodes unique to {names[0]}:')
     color = color_dict[names[0]]
     Sp1 = get_difference(Gx[0], Ints[0])
     Sp2 = get_difference(Sp1, Ints[1])
     Unique.append(Sp2)
     plot_unicity(Sp2, name_dict, names[0], dense_flag, window, layout_, color)
 
-    print(f'\nunicity_driver: Nodes unique to {names[1]}:')
     color = color_dict[names[1]]
     Sp1 = get_difference(Gx[1], Ints[0])
     Sp2 = get_difference(Sp1, Ints[2])
     Unique.append(Sp2)
     plot_unicity(Sp2, name_dict, names[1], dense_flag, window, layout_, color)
 
-    print(f'\nunicity_driver: Nodes unique to {names[2]}:')
     color = color_dict[names[2]]
     Sp1 = get_difference(Gx[2], Ints[1])
     Sp2 = get_difference(Sp1, Ints[2])

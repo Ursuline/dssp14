@@ -26,7 +26,7 @@ def _init_graph(G_nx, title, node_color, font_size):
     node_width = 2.5 # node_shape width
     eedge_color = 'dimgrey'
 
-    print(f'Initializing graph with title="{title}", node color={node_color}, font size={font_size}')
+    #print(f'Initializing graph with title="{title}", node color={node_color}, font size={font_size}')
 
     Ga = nx.drawing.nx_agraph.to_agraph(G_nx)
     Ga.graph_attr.update({
