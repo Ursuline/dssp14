@@ -473,11 +473,11 @@ def iterate_preprocess(raw_tweets, raw_labels, screen_names, stemmer_flag):
     labels = list() # processed labels
     n = len(screen_names)
     for handle in range(n):
-        print(f'tweet_core (iterate_preprocess): Preprocessing {screen_names[handle]}...')
+        #print(f'[tweet_processor::iterate_preprocess]: Preprocessing {screen_names[handle]}...')
         tweet, label = preprocess(raw_tweets[handle], raw_labels[handle], stemmer_flag)
         tweets.append(tweet)
         labels.append(label)
-        print(f'tweet_core (iterate_preprocess): Completed preprocessing {screen_names[handle]}\n')
+        #print(f'[tweet_processor::iterate_preprocess]: Completed preprocessing {screen_names[handle]}\n')
 
     return tweets, labels
 
@@ -501,7 +501,7 @@ def preprocess(raw_tweets, labels, stemming_flag = True):
     """
     tv_flag = False
 
-    if stemming_flag == False : print("*** No stemming performed ***")
+    if stemming_flag == True : print("*** Stemming performed ***")
     #if tv_flag == False: print('*** No TV/Radio mapping ***')
 
     preprocessed_tweets = list()
@@ -571,7 +571,7 @@ def preprocess(raw_tweets, labels, stemming_flag = True):
 
 
 if __name__ == '__main__':
-    # pass the screen_name of the target user
+    # pass the handle of the target user
     handle = 'JLMelenchon'
 
     # Load the data from the csv file
