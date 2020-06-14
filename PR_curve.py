@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
     # OneVsRestClassifier for multi-label prediction
     # Run classifier
-    # Change the classifier here:
+    # ***Change the classifier here:***
     classifier = OneVsRestClassifier(MLPClassifier(**params))
     classifier.fit(X_train, Y_train)
     if algo in ('LR', 'SVM'):

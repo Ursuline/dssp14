@@ -19,6 +19,19 @@ from tweet_processor import preprocess
 
 import eda_plots
 
+def test_normal_distribution(ar):
+    #This fcn tests the H0 that a sample comes from a normal distribution
+    k2, p = stats.normaltest(ar, axis=None)
+    alpha = 1e-3
+    print(f"p = {p:g}")
+
+    if p < alpha:  # null hypothesis: x comes from a normal distribution
+        print("H0 can be rejected / not a normal distribution")
+    else:
+        print("H0 cannot be rejected / distribution may be normal")
+
+
+
 def dic_to_array(dic):
     '''
     returns numpy array from nwords: count dictionary dic
@@ -116,6 +129,8 @@ if __name__ == '__main__':
         wc_tweet = build_word_dict(tweets)
         word_counts.append(wc_tweet)
         ar = dic_to_array(wc_tweet) # numpy array of word counts
+
+        test_normal_distribution(ar)
         print(stats.describe(ar))
 
         wc_arrays.append(ar)

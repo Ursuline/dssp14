@@ -82,7 +82,7 @@ def load_all_tweets():
         datum, label = load_data_by_name(handle, directory)
         data.append(datum)
         labels.append(label)
-    print(f'load_all_tweets: {handles} tweets loaded\n')
+    print(f'[load_all_tweets] tweets loaded\n')
     return data, labels
 
 
