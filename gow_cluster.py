@@ -11,7 +11,8 @@ Spectral clustering of either corpus, main core or main k-truss
 """
 import time
 
-from tweet_processor import load_data_by_name, preprocess
+from tweet_processor import preprocess
+from tweet_io import load_data_by_name
 from handles import get_name_dict, get_color_dict, get_handles
 from nx_helper import create_corpus_graph_of_words
 from clustering_helper import process_spectral_clustering
@@ -28,9 +29,9 @@ if __name__ == '__main__':
     window      = 5
 
     # Controls:
-    corpus_flag = False # compute main core
+    corpus_flag = True # compute main core
     kcore_flag  = False # compute main core
-    ktruss_flag = True # compute k-truss
+    ktruss_flag = False # compute k-truss
     n_clusters  = 3 # number of spectral clusters
 
     run_info() # run info to stdout
@@ -57,8 +58,8 @@ if __name__ == '__main__':
         process_spectral_clustering(G_corpus,
                                     n_clusters,
                                     'all handles',
-                                    'gold',
-                                    'corpus')
+                                    'olivedrab',
+                                    'corpus',)
 
     if kcore_flag: # Extract main k-core
         G_kcore = extract_Gdense(G_corpus, 'kcore')
@@ -66,8 +67,8 @@ if __name__ == '__main__':
         process_spectral_clustering(G_kcore,
                                     n_clusters,
                                     'all handles',
-                                    'olivedrab',
-                                    'kcore')
+                                    'darkorange',
+                                    'kcore',)
 
     if ktruss_flag: # Extract maximum k-truss
         G_truss = extract_Gdense(G_corpus, 'ktruss')
@@ -76,4 +77,6 @@ if __name__ == '__main__':
                                     n_clusters,
                                     'all handles',
                                     'aqua',
-                                    'ktruss')
+                                    'ktruss',)
+
+    print(f'\ngow_cluster: {time.asctime( time.localtime(time.time()) )}  running time --- {(time.time() - t0):.1f} seconds ---\n')

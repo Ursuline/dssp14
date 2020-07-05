@@ -482,7 +482,7 @@ def iterate_preprocess(raw_tweets, raw_labels, screen_names, stemmer_flag):
     return tweets, labels
 
 
-def preprocess(raw_tweets, labels, stemming_flag = True):
+def preprocess(raw_tweets, labels, stemming_flag):
     """
     raw_tweets, labels: list
     Performs various tweet pre-processing steps:
@@ -581,4 +581,4 @@ if __name__ == '__main__':
 
     # Send to pre-processing routines
     stemmer_flag = False # set to True to perform stemming
-    processed_tweets = preprocess(raw_tweets, stemmer_flag)
+    #processed_tweets = preprocess(raw_tweets, stemmer_flag)

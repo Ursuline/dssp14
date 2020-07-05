@@ -85,14 +85,19 @@ def plot_learning_curve(estimator, title, X, y, axes=None, ylim=None, cv=None,
         be big enough to contain at least one sample from each class.
         (default: np.linspace(0.1, 1.0, 5))
     """
-    if axes is None:
-        _, axes = plt.subplots(1, 3, figsize=(20, 5))
+    samples_fit_time_flag = False
+    fit_score_flag = False
 
-    axes[0].set_title(title)
+    #if axes is None:
+        #_, axes = plt.subplots(1, 3, figsize=(20, 5))
+       # _, axes = plt.subplots(1, 1, figsize=(12, 13))
+    fig = plt.figure(figsize=(12, 13))
+
+    plt.title(title)
     if ylim is not None:
-        axes[0].set_ylim(*ylim)
-    axes[0].set_xlabel("Training examples")
-    axes[0].set_ylabel("Score")
+        plt.ylim(*ylim)
+    plt.xlabel("Training examples")
+    plt.ylabel("Score")
 
     train_sizes, train_scores, test_scores, fit_times, _ = \
         learning_curve(estimator, X, y, cv=cv, n_jobs=n_jobs,
@@ -106,37 +111,42 @@ def plot_learning_curve(estimator, title, X, y, axes=None, ylim=None, cv=None,
     fit_times_std = np.std(fit_times, axis=1)
 
     # Plot learning curve
-    axes[0].grid()
-    axes[0].fill_between(train_sizes, train_scores_mean - train_scores_std,
-                         train_scores_mean + train_scores_std, alpha=0.1,
+    plt.grid()
+    plt.fill_between(train_sizes, train_scores_mean - 2*train_scores_std,
+                         train_scores_mean + 2*train_scores_std,
+                         alpha=0.1,
                          color="r")
-    axes[0].fill_between(train_sizes, test_scores_mean - test_scores_std,
-                         test_scores_mean + test_scores_std, alpha=0.1,
+    plt.fill_between(train_sizes, test_scores_mean - 2*test_scores_std,
+                         test_scores_mean + 2*test_scores_std,
+                         alpha=0.1,
                          color="g")
-    axes[0].plot(train_sizes, train_scores_mean, 'o-', color="r",
+    plt.plot(train_sizes, train_scores_mean, 'o-', color="r",
                  label="Training score")
-    axes[0].plot(train_sizes, test_scores_mean, 'o-', color="g",
-                 label="Cross-validation score")
-    axes[0].legend(loc="best")
+    plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
+                 label="CV score")
+    plt.legend(loc="best")
 
     # Plot n_samples vs fit_times
-    axes[1].grid()
-    axes[1].plot(train_sizes, fit_times_mean, 'o-')
-    axes[1].fill_between(train_sizes, fit_times_mean - fit_times_std,
-                         fit_times_mean + fit_times_std, alpha=0.1)
-    axes[1].set_xlabel("Training examples")
-    axes[1].set_ylabel("fit_times")
-    axes[1].set_title("Scalability of the model")
+    if samples_fit_time_flag:
+        axes[1].grid()
+        axes[1].plot(train_sizes, fit_times_mean, 'o-')
+        axes[1].fill_between(train_sizes, fit_times_mean - 2*fit_times_std,
+                             fit_times_mean + 2*fit_times_std, alpha=0.1)
+        axes[1].set_xlabel("Training examples")
+        axes[1].set_ylabel("fit_times")
+        axes[1].set_title("Scalability of the model")
 
     # Plot fit_time vs score
-    axes[2].grid()
-    axes[2].plot(fit_times_mean, test_scores_mean, 'o-')
-    axes[2].fill_between(fit_times_mean, test_scores_mean - test_scores_std,
-                         test_scores_mean + test_scores_std, alpha=0.1)
-    axes[2].set_xlabel("fit_times")
-    axes[2].set_ylabel("Score")
-    axes[2].set_title("Performance of the model")
-    filename = plot_dir + f'learning_curve_{method}.png'
+    if fit_score_flag :
+        axes[2].grid()
+        axes[2].plot(fit_times_mean, test_scores_mean, 'o-')
+        axes[2].fill_between(fit_times_mean, test_scores_mean - 2*test_scores_std,
+                             test_scores_mean + 2*test_scores_std, alpha=0.1)
+        axes[2].set_xlabel("fit_times")
+        axes[2].set_ylabel("Score")
+        axes[2].set_title("Performance of the model")
+
+    filename = plot_dir + f'learning_curve_{algo_name}_{method}.png'
     plt.savefig(filename)
 
     return plt
@@ -145,8 +155,9 @@ if __name__ == '__main__':
     RANDOM_STATE = 42
     n_jobs       = 2
     y_min        = .6
+    algo_name    = 'LR' # LR or SVC
     method       = 'TFIDF'
-    fig, axes = plt.subplots(3, 2, figsize=(10, 15))
+    fig, axes = plt.subplots(3, 1, figsize=(15, 10))
 
     X, y       = load_processed_data()
     # Compute TF-IDF or Graph of Words
@@ -165,20 +176,27 @@ if __name__ == '__main__':
                                        random_state = RANDOM_STATE,)
     X, _ = normalize_X(X, X_test)
 
-    title = f"Learning Curves (LR + {method})"
-    # Cross validation with 100 iterations to get smoother mean test and train
-    # score curves, each time with 20% data randomly selected as a validation set.
-    cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=RANDOM_STATE)
-    #cv = 5
-    estimator = LogisticRegression(solver = 'sag', penalty = 'l2', max_iter=250)
-    plot_learning_curve(estimator, title, X, y, axes=axes[:, 0], ylim=(y_min, 1.01),
-                        cv=cv, n_jobs=n_jobs)
+    if algo_name == 'LR':
+        title = f"Learning Curves LR+{method}"
+        # Cross validation with 100 iterations to get smoother mean test and train
+        # score curves, each time with 20% data randomly selected as a validation set.
+        #cv = ShuffleSplit(n_splits=100, test_size=0.2, random_state=RANDOM_STATE)
+        cv = 10
+        if method   == 'TFIDF': C = 1.29e-4
+        elif method == 'GOW'  : C = 2.15e-5
+        estimator = LogisticRegression(solver = 'sag', penalty = 'l2', C=C)
+        plot_learning_curve(estimator, title, X, y, ylim=(y_min, 1.01),
+                            cv=cv, n_jobs=n_jobs)
 
-    title = rf"Learning Curves (SVC + {method}, sigmoid)"
-    # SVC is more expensive so we do a lower number of CV iterations:
-    cv = ShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
-    estimator = SVC(gamma  = 'scale', kernel = 'sigmoid')
-    plot_learning_curve(estimator, title, X, y, axes=axes[:, 1], ylim=(y_min, 1.01),
-                        cv=cv, n_jobs=n_jobs)
+    elif algo_name == 'SVC':
+        title = rf"Learning Curves SVC+{method}, sigmoid kernel"
+        # SVC is more expensive so we do a lower number of CV iterations:
+        #cv = ShuffleSplit(n_splits=10, test_size=0.2, random_state=RANDOM_STATE)
+        cv = 10
+        if method   == 'TFIDF': C = 2.477
+        elif method == 'GOW'  : C = 1.630
+        estimator = SVC(gamma  = 'scale', kernel = 'sigmoid', C=C)
+        plot_learning_curve(estimator, title, X, y, ylim=(y_min, 1.01),
+                            cv=cv, n_jobs=n_jobs)
 
     plt.show()

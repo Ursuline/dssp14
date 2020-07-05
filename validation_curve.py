@@ -24,7 +24,6 @@ from tfidf import tf_idf
 
 plot_dir = 'plots/prediction/'
 
-
 scoring      = 'accuracy'
 RANDOM_STATE = 42
 

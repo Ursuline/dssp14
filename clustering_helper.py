@@ -46,6 +46,7 @@ def modularity(G, clustering):
 
 def spectral_clustering(G, k): # Main spectral clustering algorithm
     # k: number of clusters
+    plot_eigs_flag = True
     n = G.number_of_nodes()
     A = nx.to_numpy_matrix(G)
     D = np.zeros((n,n))
@@ -53,6 +54,28 @@ def spectral_clustering(G, k): # Main spectral clustering algorithm
         D[i,i] = np.sum(A[i,:])
 
     L = D - A # Construct Laplacian
+
+    if plot_eigs_flag:
+        import matplotlib.pyplot as plt
+        eigvals, _ = eigs(L, k=50, which='SR')
+
+        print(f'eigvals type: {eigvals}')
+        ks = np.arange(0, 50)
+
+        print(f'ks length: {len(ks)}')
+        print(f'eigvals length: {len(eigvals)}')
+
+        plt.figure(2)
+        plt.plot(ks, eigvals.real, marker='o', markersize=5, mec='olivedrab')
+        plt.savefig('eigenvalue_spectrum.png')
+
+        plt.title('eigenvalue spectrum')
+        plt.xlabel('k')
+        plt.ylabel('eigenvalue')
+        plt.show()
+
+
+    print(f'eigenvalues: {eigvals}')
 
     eigvals, eigvecs = eigs(L, k=k, which='SR')
     eigvecs = eigvecs.real
